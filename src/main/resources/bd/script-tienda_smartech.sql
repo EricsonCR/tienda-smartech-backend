@@ -15,6 +15,7 @@ create table usuarios(
     email varchar(50) unique not null,
     password varchar(255) not null,
     estado boolean default 1,
+    verificado boolean default 0,
     nacimiento date,
     registro datetime,
     actualiza datetime
@@ -460,6 +461,7 @@ select * from pedidos;
 select * from pedido_detalles;
 
 /*
+
 drop table carritos;
 truncate table carritos;
 drop table carrito_detalles;
@@ -480,4 +482,5 @@ where id=1;
 update usuarios
 set documento = 'CE'
 where id = 1;
+
 */
