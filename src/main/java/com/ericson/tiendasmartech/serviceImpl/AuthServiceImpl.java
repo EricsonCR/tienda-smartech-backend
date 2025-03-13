@@ -1,12 +1,14 @@
-package com.ericson.tiendasmartech.ServiceImpl;
+package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.dto.AuthDto;
+import com.ericson.tiendasmartech.dto.EmailDto;
 import com.ericson.tiendasmartech.entity.Usuario;
 import com.ericson.tiendasmartech.enums.Rol;
 import com.ericson.tiendasmartech.model.ServiceResponse;
 import com.ericson.tiendasmartech.repository.UsuarioRepository;
 import com.ericson.tiendasmartech.service.AuthService;
 import com.ericson.tiendasmartech.service.JwtService;
+import com.ericson.tiendasmartech.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final MailService mailService;
 
     @Override
     public ServiceResponse signin(AuthDto authDto) {
@@ -70,12 +73,29 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ServiceResponse sendTokenSignup(String email) {
-        return null;
+        try {
+            if (!usuarioRepository.existsByEmail(email))
+                return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
+            if (sendEmail(email))
+                return new ServiceResponse("Email enviado", HttpStatus.OK, null);
+            return new ServiceResponse("Email fallido", HttpStatus.CONFLICT, null);
+        } catch (Exception e) {
+            return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        }
     }
 
     @Override
     public ServiceResponse sendTokenForgot(String email) {
         return null;
+    }
+
+    private boolean sendEmail(String email) {
+        String asunto = "Email de validacion de registro";
+        String token = jwtService.getToken(email);
+        String body = "Hola " + email + ", bienvenido a nuestra tienda SmarTech.\n" +
+                "Puedes validar tu registro haciendo click al siguiente enlace:\n" +
+                "http://localhost:4200/auth/validatedToken/" + token;
+        return mailService.sendEmail(new EmailDto(email, asunto, body, null));
     }
 
     private Usuario dtoToEntity(AuthDto authDto) {

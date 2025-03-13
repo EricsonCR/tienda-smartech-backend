@@ -7,10 +7,7 @@ import com.ericson.tiendasmartech.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,6 +27,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ControllerResponse> signup(@RequestBody AuthDto authDto) {
         ServiceResponse service = authService.signup(authDto);
+        return ResponseEntity.ok(new ControllerResponse(service.message(), service.status(), service.data()));
+    }
+
+    @GetMapping("/sendTokenSignup/{email}")
+    public ResponseEntity<ControllerResponse> sendTokenSignup(@PathVariable String email) {
+        ServiceResponse service = authService.sendTokenSignup(email);
         return ResponseEntity.ok(new ControllerResponse(service.message(), service.status(), service.data()));
     }
 }

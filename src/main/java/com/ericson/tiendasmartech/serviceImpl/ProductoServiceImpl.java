@@ -1,4 +1,4 @@
-package com.ericson.tiendasmartech.ServiceImpl;
+package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.dto.*;
 import com.ericson.tiendasmartech.entity.*;

@@ -1,4 +1,4 @@
-package com.ericson.tiendasmartech.ServiceImpl;
+package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.service.JwtService;
 import io.jsonwebtoken.Claims;
