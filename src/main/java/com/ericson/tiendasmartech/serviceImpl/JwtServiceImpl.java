@@ -2,6 +2,7 @@ package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.service.JwtService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
     private static final String SECRET_KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
-    private static final Long TOKEN_DURACION = 3_600_000L; // 1 hora en milisegundos
+    private static final Long TOKEN_DURACION = 60_000L; // 1 min en milisegundos
 
     private Claims getAllClaims(String token) {
         return Jwts
@@ -71,7 +72,12 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String getUsernameToken(String token) {
-        return getClaim(token, Claims::getSubject);
+        try {
+            return getAllClaims(token).getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
+        //return getClaim(token, Claims::getSubject);
     }
 
     @Override
@@ -82,6 +88,10 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public Boolean expiredToken(String token) {
-        return !isTokenExpired(token);
+        try {
+            return getExpiration(token).before(new Date());
+        } catch (Exception e) {
+            return true; // token expirado
+        }
     }
 }

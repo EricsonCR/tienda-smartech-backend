@@ -19,7 +19,8 @@ public class AuthController {
     public ResponseEntity<ControllerResponse> signin(@RequestBody AuthDto authDto) {
         ServiceResponse service = authService.signin(authDto);
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + service.data().toString());
+        if (service.data() != null)
+            headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + service.data().toString());
         return ResponseEntity.ok().headers(headers)
                 .body(new ControllerResponse(service.message(), service.status(), service.data()));
     }
@@ -33,6 +34,12 @@ public class AuthController {
     @GetMapping("/sendTokenSignup/{email}")
     public ResponseEntity<ControllerResponse> sendTokenSignup(@PathVariable String email) {
         ServiceResponse service = authService.sendTokenSignup(email);
+        return ResponseEntity.ok(new ControllerResponse(service.message(), service.status(), service.data()));
+    }
+
+    @GetMapping("/validatedToken/{token}")
+    public ResponseEntity<ControllerResponse> validatedToken(@PathVariable String token) {
+        ServiceResponse service = authService.validatedToken(token);
         return ResponseEntity.ok(new ControllerResponse(service.message(), service.status(), service.data()));
     }
 }

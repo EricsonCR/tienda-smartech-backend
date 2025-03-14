@@ -461,6 +461,9 @@ select * from pedidos;
 select * from pedido_detalles;
 
 /*
+update usuarios
+set verificado = 0
+where id = 2
 
 drop table carritos;
 truncate table carritos;

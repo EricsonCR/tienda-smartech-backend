@@ -37,6 +37,9 @@ public class AuthServiceImpl implements AuthService {
             if (!usuarioRepository.existsByEmail(authDto.email()))
                 return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
 
+            if (!usuarioRepository.existsByEmailAndVerificadoIsTrue(authDto.email()))
+                return new ServiceResponse("Email no esta validado", HttpStatus.CONFLICT, null);
+
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(authDto.email(), authDto.password());
             Authentication auth = authenticationManager.authenticate(authToken);
@@ -60,7 +63,10 @@ public class AuthServiceImpl implements AuthService {
             Usuario usuario = dtoToEntity(authDto);
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             usuarioRepository.save(usuario);
-            return new ServiceResponse("Usuario registrado", HttpStatus.OK, null);
+            String message = "Usuario registrado";
+            if (sendEmail(authDto.email())) message += ", Email enviado.";
+            else message += ", Email no enviado.";
+            return new ServiceResponse(message, HttpStatus.OK, null);
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -68,7 +74,25 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ServiceResponse validatedToken(String token) {
-        return null;
+        try {
+
+            String email = jwtService.getUsernameToken(token);
+            if (!usuarioRepository.existsByEmail(email))
+                return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
+            if (usuarioRepository.existsByEmailAndVerificadoIsTrue(email))
+                return new ServiceResponse("Email ya esta validado", HttpStatus.CONFLICT, null);
+            if (jwtService.expiredToken(token)) {
+                String message = "Token expirado, debe generar token de registro";
+                return new ServiceResponse(message, HttpStatus.BAD_REQUEST, null);
+            }
+
+            Usuario usuario = usuarioRepository.findByEmail(email).orElse(new Usuario());
+            usuario.setVerificado(true);
+            usuarioRepository.save(usuario);
+            return new ServiceResponse("Usuario validado exitosamente", HttpStatus.OK, null);
+        } catch (Exception e) {
+            return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        }
     }
 
     @Override
@@ -76,6 +100,8 @@ public class AuthServiceImpl implements AuthService {
         try {
             if (!usuarioRepository.existsByEmail(email))
                 return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
+            if (usuarioRepository.existsByEmailAndVerificadoIsTrue(email))
+                return new ServiceResponse("Email ya esta validado", HttpStatus.BAD_REQUEST, null);
             if (sendEmail(email))
                 return new ServiceResponse("Email enviado", HttpStatus.OK, null);
             return new ServiceResponse("Email fallido", HttpStatus.CONFLICT, null);
