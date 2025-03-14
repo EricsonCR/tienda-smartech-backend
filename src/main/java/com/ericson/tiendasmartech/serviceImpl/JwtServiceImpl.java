@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
     private static final String SECRET_KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
-    private static final Long TOKEN_DURACION = 60_000L; // 1 min en milisegundos
+    private static final Long TOKEN_DURACION = 3_600_000L; // 1 hora en milisegundos
 
     private Claims getAllClaims(String token) {
         return Jwts
