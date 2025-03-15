@@ -109,6 +109,6 @@ public class DireccionServiceImpl implements DireccionService {
     private Usuario dtoToEntity(UsuarioDto usuarioDto) {
         return new Usuario(usuarioDto.id(), null, null, null, null,
                 null, null, null, null, null, false,
-                false, null, null, null, null);
+                false, null, null, null, null, null);
     }
 }

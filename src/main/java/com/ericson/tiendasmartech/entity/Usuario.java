@@ -46,6 +46,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     private List<Direccion> direcciones;
 
+    @OneToMany(mappedBy = "usuario")
+    private List<Pedido> pedidos;
+
     @PrePersist
     private void prePersist() {
         estado = true;

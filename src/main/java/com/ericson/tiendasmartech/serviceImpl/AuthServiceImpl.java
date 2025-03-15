@@ -145,6 +145,7 @@ public class AuthServiceImpl implements AuthService {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }

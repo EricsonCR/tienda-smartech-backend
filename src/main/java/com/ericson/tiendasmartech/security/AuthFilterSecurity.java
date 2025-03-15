@@ -51,23 +51,33 @@ public class AuthFilterSecurity extends OncePerRequestFilter {
                 }
             }
         } catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(new ControllerResponse("EXPIRED JWT ERROR: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null)));
+            responseException(response, "JWT_EXPIRED");
             return;
         } catch (JwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(new ControllerResponse("JWT ERROR: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null)));
+            responseException(response, "JWT_INVALID");
             return;
         } catch (AuthenticationServiceException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(new ControllerResponse("AUTH ERROR: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null)));
+            responseException(response, "AUTH_ERROR");
             return;
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(new ControllerResponse("EXCEPTION ERROR: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null)));
+            responseException(response, "EXCEPTION");
             return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void responseException(HttpServletResponse response, String exception) throws IOException {
+        String message;
+        switch (exception) {
+            case "JWT_EXPIRED" -> message = "Expired JWT";
+            case "JWT_INVALID" -> message = "Invalid JWT";
+            case "AUTH_ERROR" -> message = "AUTH Error";
+            case "EXCEPTION" -> message = "Exception";
+            default -> message = "Unknown exception";
+        }
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        ControllerResponse controllerResponse = new ControllerResponse(message, HttpStatus.INTERNAL_SERVER_ERROR, null);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(controllerResponse));
     }
 }

@@ -1,8 +1,12 @@
 package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.dto.DireccionDto;
+import com.ericson.tiendasmartech.dto.PedidoDetalleDto;
+import com.ericson.tiendasmartech.dto.PedidoDto;
 import com.ericson.tiendasmartech.dto.UsuarioDto;
 import com.ericson.tiendasmartech.entity.Direccion;
+import com.ericson.tiendasmartech.entity.Pedido;
+import com.ericson.tiendasmartech.entity.PedidoDetalle;
 import com.ericson.tiendasmartech.entity.Usuario;
 import com.ericson.tiendasmartech.model.ServiceResponse;
 import com.ericson.tiendasmartech.repository.UsuarioRepository;
@@ -69,14 +73,51 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getTelefono(),
                 usuario.getEmail(),
                 usuario.getNacimiento(),
-                entityToDto(usuario.getDirecciones())
+                toListDireccionDto(usuario.getDirecciones()),
+                toListPedidoDto(usuario.getPedidos())
         );
     }
 
-    private List<DireccionDto> entityToDto(List<Direccion> direcciones) {
-        List<DireccionDto> direccionDtos = new ArrayList<>();
+    private List<PedidoDto> toListPedidoDto(List<Pedido> pedidos) {
+        List<PedidoDto> lista = new ArrayList<>();
+        for (Pedido pedido : pedidos) {
+            lista.add(new PedidoDto(
+                    pedido.getId(),
+                    pedido.getNumero(),
+                    pedido.getEstado(),
+                    null,
+                    pedido.getEntrega(),
+                    null,
+                    pedido.getPrecio_envio(),
+                    pedido.getPrecio_cupon(),
+                    pedido.getTotal(),
+                    pedido.getIgv(),
+                    pedido.getComentarios(),
+                    pedido.getFecha_entrega(),
+                    toListPedidoDetalleDto(pedido.getPedidoDetalles())
+            ));
+        }
+        return lista;
+    }
+
+    private List<PedidoDetalleDto> toListPedidoDetalleDto(List<PedidoDetalle> detalles) {
+        List<PedidoDetalleDto> lista = new ArrayList<>();
+        for (PedidoDetalle detalle : detalles) {
+            lista.add(new PedidoDetalleDto(
+                    detalle.getId(),
+                    null,
+                    null,
+                    detalle.getCantidad(),
+                    detalle.getPrecio()
+            ));
+        }
+        return lista;
+    }
+
+    private List<DireccionDto> toListDireccionDto(List<Direccion> direcciones) {
+        List<DireccionDto> lista = new ArrayList<>();
         for (Direccion direccion : direcciones) {
-            direccionDtos.add(new DireccionDto(
+            lista.add(new DireccionDto(
                     direccion.getId(),
                     null,
                     direccion.getVia(),
@@ -92,7 +133,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                     direccion.getCodigo_postal()
             ));
         }
-        return direccionDtos;
+        return lista;
     }
 
     private String validar(UsuarioDto usuarioDto) {

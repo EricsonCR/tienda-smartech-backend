@@ -197,7 +197,7 @@ public class CarritoServiceImpl implements CarritoService {
     private UsuarioDto entityToDto(Usuario usuario) {
         return new UsuarioDto(usuario.getId(), usuario.getDocumento(), usuario.getNumero(), usuario.getRol(),
                 usuario.getNombres(), usuario.getApellidos(), usuario.getDireccion(), usuario.getTelefono(),
-                usuario.getEmail(), usuario.getNacimiento(), null);
+                usuario.getEmail(), usuario.getNacimiento(), null,null);
     }
 
     private Carrito dtoToEntity(CarritoDto carritoDto) {
