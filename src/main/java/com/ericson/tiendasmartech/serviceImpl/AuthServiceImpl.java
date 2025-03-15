@@ -2,9 +2,11 @@ package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.dto.AuthDto;
 import com.ericson.tiendasmartech.dto.EmailDto;
+import com.ericson.tiendasmartech.entity.Carrito;
 import com.ericson.tiendasmartech.entity.Usuario;
 import com.ericson.tiendasmartech.enums.Rol;
 import com.ericson.tiendasmartech.model.ServiceResponse;
+import com.ericson.tiendasmartech.repository.CarritoRepository;
 import com.ericson.tiendasmartech.repository.UsuarioRepository;
 import com.ericson.tiendasmartech.service.AuthService;
 import com.ericson.tiendasmartech.service.JwtService;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UsuarioRepository usuarioRepository;
+    private final CarritoRepository carritoRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
@@ -63,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
             Usuario usuario = dtoToEntity(authDto);
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             usuarioRepository.save(usuario);
+            carritoRepository.save(new Carrito(0, usuario, null, null, null));
             String message = "Usuario registrado";
             if (sendEmail(authDto.email())) message += ", Email enviado.";
             else message += ", Email no enviado.";
