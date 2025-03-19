@@ -1,7 +1,7 @@
 package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.dto.EmailDto;
-import com.ericson.tiendasmartech.service.MailService;
+import com.ericson.tiendasmartech.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,33 +16,32 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
-public class MailServiceImpl implements MailService {
+public class EmailServiceImpl implements EmailService {
 
-    private final JavaMailSender mailSender;
+    private final JavaMailSender emailSender;
 
     @Value("${email.username}")
     private String userFrom;
 
     @Override
-    public Boolean sendEmail(EmailDto emailDto) {
+    public boolean sendEmail(EmailDto emailDto) {
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom(userFrom);
             mailMessage.setTo(emailDto.email());
             mailMessage.setSubject(emailDto.asunto());
             mailMessage.setText(emailDto.mensaje());
-            mailSender.send(mailMessage);
+            emailSender.send(mailMessage);
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return false;
         }
-        return false;
     }
 
     @Override
-    public Boolean sendEmail(EmailDto emailDto, File file) {
+    public boolean sendEmailFile(EmailDto emailDto, File file) {
         try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
             String encode = StandardCharsets.UTF_8.name();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, encode);
             mimeMessageHelper.setFrom(userFrom);
@@ -50,11 +49,10 @@ public class MailServiceImpl implements MailService {
             mimeMessageHelper.setSubject(emailDto.asunto());
             mimeMessageHelper.setText(emailDto.mensaje(), true);
             mimeMessageHelper.addAttachment(file.getName(), file);
-            mailSender.send(mimeMessage);
+            emailSender.send(mimeMessage);
             return true;
         } catch (MessagingException e) {
-            System.out.println(e.getMessage());
+            return false;
         }
-        return false;
     }
 }

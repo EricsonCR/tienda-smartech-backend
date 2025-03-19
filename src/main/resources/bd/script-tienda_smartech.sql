@@ -449,6 +449,40 @@ insert into direcciones(usuario,documento,numero,nombres,celular,via,direccion,r
 (1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Los alisos 1250','parque previ','LOS OLIVOS','LIMA','LIMA',15201,now(),now()),
 (1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Carlos izaguirre 1210','mercado covida','LOS OLIVOS','LIMA','LIMA',15301,now(),now());
 
+DELIMITER $$
+CREATE TRIGGER after_insert_usuarios
+AFTER INSERT ON usuarios
+FOR EACH ROW
+BEGIN
+    INSERT INTO carritos (usuario, registro, actualiza)
+    VALUES (NEW.id, now(), now());
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER after_insert_pedido_detalles
+AFTER INSERT ON pedido_detalles
+FOR EACH ROW
+BEGIN
+    -- Declarar la variable para identificar al usuario
+    DECLARE user_id INT;
+
+    -- Obtener el ID del usuario asociado al pedido insertado
+    SELECT usuario INTO user_id
+    FROM pedidos
+    WHERE id = NEW.pedido;
+
+    -- Eliminar las filas del carrito_detalles únicamente del usuario correspondiente
+    DELETE FROM carrito_detalles
+    WHERE producto = NEW.producto
+      AND carrito IN (
+          SELECT id
+          FROM carritos
+          WHERE usuario = user_id
+      );
+END$$
+DELIMITER ;
+
 select * from usuarios;
 select * from direcciones;
 select * from productos;

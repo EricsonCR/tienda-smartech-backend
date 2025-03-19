@@ -24,14 +24,14 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "usuario")
     private Usuario usuario;
 
     @Enumerated(EnumType.STRING)
     private Entrega entrega;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "direccion")
     private Direccion direccion;
 

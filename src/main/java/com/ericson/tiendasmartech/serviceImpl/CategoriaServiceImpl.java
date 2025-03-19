@@ -42,21 +42,27 @@ public class CategoriaServiceImpl implements CategoriaService {
     private ProductoDto entityToDto(Producto producto) {
         List<FotoDto> fotos = new ArrayList<>();
         for (Foto foto : producto.getFotos()) {
-            fotos.add(new FotoDto(foto.getId(), new GaleriaDto(foto.getGaleria().getId(), foto.getGaleria().getUrl())));
+            fotos.add(new FotoDto(foto.getId(),
+                    new GaleriaDto(foto.getGaleria().getId(), foto.getGaleria().getUrl())));
         }
 
         List<EspecificacionDto> especificaciones = new ArrayList<>();
         for (Especificacion especificacion : producto.getEspecificaciones()) {
-            especificaciones.add(new EspecificacionDto(especificacion.getId(), especificacion.getNombre(),
-                    especificacion.getDescripcion()));
+            especificaciones.add(
+                    new EspecificacionDto(especificacion.getId(), especificacion.getNombre(),
+                            especificacion.getDescripcion()));
         }
 
-        MarcaDto marca = new MarcaDto(producto.getMarca().getId(), producto.getMarca().getNombre(), null);
-        CategoriaDto categoria = new CategoriaDto(producto.getCategoria().getId(), producto.getCategoria().getNombre(),
+        MarcaDto marca = new MarcaDto(producto.getMarca().getId(), producto.getMarca().getNombre(),
+                null);
+        CategoriaDto categoria = new CategoriaDto(producto.getCategoria().getId(),
+                producto.getCategoria().getNombre(),
                 null);
 
-        return new ProductoDto(producto.getId(), producto.getSku(), producto.getNombre(), producto.getDescripcion(),
-                producto.getSlogan(), marca, categoria, producto.getPrecio(), producto.getDescuento(),
+        return new ProductoDto(producto.getId(), producto.getSku(), producto.getNombre(),
+                producto.getDescripcion(),
+                producto.getSlogan(), marca, categoria, producto.getPrecio(),
+                producto.getDescuento(),
                 producto.getStock(), fotos, especificaciones);
     }
 }

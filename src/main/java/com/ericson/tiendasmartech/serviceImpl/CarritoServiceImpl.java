@@ -28,11 +28,13 @@ public class CarritoServiceImpl implements CarritoService {
         try {
             Carrito carrito = dtoToEntity(carritoDto);
             if (carrito.getUsuario().getId() == 0)
-                return new ServiceResponse("El carrito no tiene usuario asignado", HttpStatus.BAD_REQUEST, null);
+                return new ServiceResponse("El carrito no tiene usuario asignado",
+                        HttpStatus.BAD_REQUEST, null);
             for (CarritoDetalle carritoDetalle : carrito.getCarritoDetalles())
                 carritoDetalle.setCarrito(carrito);
             carritoRepository.save(carrito);
-            return new ServiceResponse("Carrito agregado exitosamente", HttpStatus.OK, entityToDto(carrito));
+            return new ServiceResponse("Carrito agregado exitosamente", HttpStatus.OK,
+                    entityToDto(carrito));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -49,7 +51,8 @@ public class CarritoServiceImpl implements CarritoService {
             carrito.getCarritoDetalles().add(dtoToEntity(carritoDetalleDto));
             carrito.getCarritoDetalles().getLast().setCarrito(carrito);
             carritoRepository.save(carrito);
-            return new ServiceResponse("Producto agregado al carrito", HttpStatus.OK, entityToDto(carrito));
+            return new ServiceResponse("Producto agregado al carrito", HttpStatus.OK,
+                    entityToDto(carrito));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -101,7 +104,8 @@ public class CarritoServiceImpl implements CarritoService {
                 return new ServiceResponse("El producto no existe", HttpStatus.BAD_REQUEST, null);
             int cantidad = carrito.getCarritoDetalles().get(index).getCantidad();
             if (cantidad > 1) carrito.getCarritoDetalles().get(index).setCantidad(--cantidad);
-            else return new ServiceResponse("La cantidad minima debe ser 2", HttpStatus.BAD_REQUEST, null);
+            else return new ServiceResponse("La cantidad minima debe ser 2", HttpStatus.BAD_REQUEST,
+                    null);
             carritoRepository.save(carrito);
             return new ServiceResponse("Producto disminuido", HttpStatus.OK, entityToDto(carrito));
         } catch (Exception e) {
@@ -114,7 +118,8 @@ public class CarritoServiceImpl implements CarritoService {
         try {
             Carrito carrito = carritoRepository.findByUsuario(id).orElse(new Carrito());
             if (carrito.getUsuario() == null)
-                return new ServiceResponse("No exsite carrito para este usuario", HttpStatus.BAD_REQUEST, null);
+                return new ServiceResponse("No exsite carrito para este usuario",
+                        HttpStatus.BAD_REQUEST, null);
             return new ServiceResponse("Carrito encontrado", HttpStatus.OK, entityToDto(carrito));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -124,7 +129,8 @@ public class CarritoServiceImpl implements CarritoService {
     @Override
     public ServiceResponse actualizar(CarritoDto carritoDto) {
         try {
-            Carrito carrito = carritoRepository.findByUsuario(carritoDto.usuario().id()).orElse(new Carrito());
+            Carrito carrito = carritoRepository.findByUsuario(carritoDto.usuario().id())
+                    .orElse(new Carrito());
             if (carrito.getId() == 0)
                 return new ServiceResponse("No exite carrito", HttpStatus.BAD_REQUEST, null);
             List<CarritoDetalle> lista = carrito.getCarritoDetalles();
@@ -135,7 +141,8 @@ public class CarritoServiceImpl implements CarritoService {
             carrito.setCarritoDetalles(lista);
             carrito.getCarritoDetalles().forEach(detalle -> detalle.setCarrito(carrito));
             carritoRepository.save(carrito);
-            return new ServiceResponse("Carrito acoplado exitosamente", HttpStatus.OK, entityToDto(carrito));
+            return new ServiceResponse("Carrito acoplado exitosamente", HttpStatus.OK,
+                    entityToDto(carrito));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -159,29 +166,36 @@ public class CarritoServiceImpl implements CarritoService {
         ProductoDto p = carritoDetalleDto.producto();
         List<Foto> fotos = new ArrayList<>();
         for (FotoDto fotoDto : p.fotos()) {
-            fotos.add(new Foto(fotoDto.id(), new Galeria(fotoDto.galeria().id(), fotoDto.galeria().url()), null));
+            fotos.add(new Foto(fotoDto.id(),
+                    new Galeria(fotoDto.galeria().id(), fotoDto.galeria().url()), null));
         }
         Producto producto = new Producto(p.id(), p.sku(), p.nombre(), p.descripcion(), p.slogan(),
                 new Marca(p.marca().id(), p.marca().nombre(), null, null),
-                new Categoria(p.categoria().id(), p.categoria().nombre(), null, null), p.precio(), p.descuento(),
+                new Categoria(p.categoria().id(), p.categoria().nombre(), null, null), p.precio(),
+                p.descuento(),
                 p.stock(), false, null, null, fotos, null);
-        return new CarritoDetalle(carritoDetalleDto.id(), null, producto, carritoDetalleDto.cantidad());
+        return new CarritoDetalle(carritoDetalleDto.id(), null, producto,
+                carritoDetalleDto.cantidad());
     }
 
     private CarritoDto entityToDto(Carrito carrito) {
         List<CarritoDetalleDto> listaCarritoDetalleDtos = new ArrayList<>();
         for (CarritoDetalle carritoDetalle : carrito.getCarritoDetalles()) {
             listaCarritoDetalleDtos
-                    .add(new CarritoDetalleDto(carritoDetalle.getId(), new CarritoDto(carrito.getId(), null, null),
-                            entityToDto(carritoDetalle.getProducto()), carritoDetalle.getCantidad()));
+                    .add(new CarritoDetalleDto(carritoDetalle.getId(),
+                            new CarritoDto(carrito.getId(), null, null),
+                            entityToDto(carritoDetalle.getProducto()),
+                            carritoDetalle.getCantidad()));
         }
-        return new CarritoDto(carrito.getId(), entityToDto(carrito.getUsuario()), listaCarritoDetalleDtos);
+        return new CarritoDto(carrito.getId(), entityToDto(carrito.getUsuario()),
+                listaCarritoDetalleDtos);
     }
 
     private ProductoDto entityToDto(Producto producto) {
         CategoriaDto categoriaDto = new CategoriaDto(producto.getCategoria().getId(),
                 producto.getCategoria().getNombre(), null);
-        MarcaDto marcaDto = new MarcaDto(producto.getMarca().getId(), producto.getMarca().getNombre(), null);
+        MarcaDto marcaDto = new MarcaDto(producto.getMarca().getId(),
+                producto.getMarca().getNombre(), null);
         List<FotoDto> listaFotoDtos = new ArrayList<>();
         if (producto.getFotos() != null) {
             for (Foto foto : producto.getFotos()) {
@@ -189,24 +203,31 @@ public class CarritoServiceImpl implements CarritoService {
                         new GaleriaDto(foto.getGaleria().getId(), foto.getGaleria().getUrl())));
             }
         }
-        return new ProductoDto(producto.getId(), producto.getSku(), producto.getNombre(), producto.getDescripcion(),
-                producto.getSlogan(), marcaDto, categoriaDto, producto.getPrecio(), producto.getDescuento(),
+        return new ProductoDto(producto.getId(), producto.getSku(), producto.getNombre(),
+                producto.getDescripcion(),
+                producto.getSlogan(), marcaDto, categoriaDto, producto.getPrecio(),
+                producto.getDescuento(),
                 producto.getStock(), listaFotoDtos, null);
     }
 
     private UsuarioDto entityToDto(Usuario usuario) {
-        return new UsuarioDto(usuario.getId(), usuario.getDocumento(), usuario.getNumero(), usuario.getRol(),
-                usuario.getNombres(), usuario.getApellidos(), usuario.getDireccion(), usuario.getTelefono(),
-                usuario.getEmail(), usuario.getNacimiento(), null,null);
+        return new UsuarioDto(usuario.getId(), usuario.getDocumento(), usuario.getNumero(),
+                usuario.getRol(),
+                usuario.getNombres(), usuario.getApellidos(), usuario.getDireccion(),
+                usuario.getTelefono(),
+                usuario.getEmail(), usuario.getNacimiento(), null, null);
     }
 
     private Carrito dtoToEntity(CarritoDto carritoDto) {
-        Usuario usuario = usuarioRepository.findByEmail(carritoDto.usuario().email()).orElse(new Usuario());
+        Usuario usuario = usuarioRepository.findByEmail(carritoDto.usuario().email())
+                .orElse(new Usuario());
         List<CarritoDetalle> listaCarritoDetalles = new ArrayList<>();
         for (CarritoDetalleDto carritoDetalleDto : carritoDto.carritoDetalles()) {
-            Producto producto = productoRepository.findById(carritoDetalleDto.producto().id()).orElse(new Producto());
+            Producto producto = productoRepository.findById(carritoDetalleDto.producto().id())
+                    .orElse(new Producto());
             listaCarritoDetalles.add(
-                    new CarritoDetalle(carritoDetalleDto.id(), new Carrito(), producto, carritoDetalleDto.cantidad()));
+                    new CarritoDetalle(carritoDetalleDto.id(), new Carrito(), producto,
+                            carritoDetalleDto.cantidad()));
         }
         return new Carrito(carritoDto.id(), usuario, listaCarritoDetalles, null, null);
     }

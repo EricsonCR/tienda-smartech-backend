@@ -28,7 +28,8 @@ public class DireccionServiceImpl implements DireccionService {
             List<Direccion> direcciones = direccionRepository.findAllByUsuario(id);
             if (direcciones.isEmpty())
                 return new ServiceResponse("Lista vacia", HttpStatus.NOT_FOUND, null);
-            return new ServiceResponse("Lista de direcciones", HttpStatus.OK, entityToDto(direcciones));
+            return new ServiceResponse("Lista de direcciones", HttpStatus.OK,
+                    entityToDto(direcciones));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -40,7 +41,8 @@ public class DireccionServiceImpl implements DireccionService {
             Direccion direccion = direccionRepository.findById(id).orElse(null);
             if (direccion == null)
                 return new ServiceResponse("Direccion no encontrada", HttpStatus.NOT_FOUND, null);
-            return new ServiceResponse("Direccion encontrado exitosamente", HttpStatus.OK, entityToDto(direccion));
+            return new ServiceResponse("Direccion encontrado exitosamente", HttpStatus.OK,
+                    entityToDto(direccion));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -93,16 +95,18 @@ public class DireccionServiceImpl implements DireccionService {
     }
 
     private DireccionDto entityToDto(Direccion direccion) {
-        return new DireccionDto(direccion.getId(), null, direccion.getVia(), direccion.getDocumento(),
-                direccion.getNumero(), direccion.getNombres(), direccion.getCelular(), direccion.getDireccion(),
+        return new DireccionDto(direccion.getId(), null, direccion.getVia(),
+                direccion.getDocumento(),
+                direccion.getNumero(), direccion.getNombres(), direccion.getCelular(),
+                direccion.getDireccion(),
                 direccion.getReferencia(), direccion.getDistrito(), direccion.getProvincia(),
                 direccion.getDepartamento(), direccion.getCodigo_postal());
     }
 
     private Direccion dtoToEntity(DireccionDto direccionDto) {
-        return new Direccion(direccionDto.id(), dtoToEntity(direccionDto.usuario()), direccionDto.via(),
-                direccionDto.documento(), direccionDto.numero(), direccionDto.nombres(), direccionDto.celular(),
-                direccionDto.direccion(), direccionDto.referencia(), direccionDto.distrito(), direccionDto.provincia(),
+        return new Direccion(direccionDto.id(), dtoToEntity(direccionDto.usuario()), direccionDto.via(), direccionDto.documento(), direccionDto.numero(), direccionDto.nombres(), direccionDto.celular(),
+                direccionDto.direccion(), direccionDto.referencia(), direccionDto.distrito(),
+                direccionDto.provincia(),
                 direccionDto.departamento(), direccionDto.codigo_postal(), null, null);
     }
 
