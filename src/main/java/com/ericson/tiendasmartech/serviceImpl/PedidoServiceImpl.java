@@ -8,6 +8,7 @@ import com.ericson.tiendasmartech.repository.PedidoRepository;
 import com.ericson.tiendasmartech.service.EmailService;
 import com.ericson.tiendasmartech.service.PdfService;
 import com.ericson.tiendasmartech.service.PedidoService;
+import com.ericson.tiendasmartech.util.PdfUtil;
 import com.ericson.tiendasmartech.util.PedidoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class PedidoServiceImpl implements PedidoService {
     private final EmailService emailService;
     private final PedidoMapper pedidoMapper;
     private final PedidoUtil pedidoUtil;
+    private final PdfUtil pdfUtil;
 
     @Override
     @Transactional
@@ -35,7 +37,7 @@ public class PedidoServiceImpl implements PedidoService {
             pedido.setNumero(pedidoUtil.generarNumeroPedido());
             pedidoRepository.save(pedido);
 
-            File file = pdfService.generarPdf(pedidoMapper.toDto(pedido));
+            File file = pdfUtil.generarPdf(pedidoMapper.toDto(pedido));
             EmailDto emailDto = pedidoUtil.generarEmailPedido(pedido.getUsuario().getEmail(), pedido.getNumero());
 //            if (!emailService.sendEmailFile(emailDto, file))
 //                return new ServiceResponse("Pedido ok, Email fallido, ", HttpStatus.OK, pedidoMapper.toDto(pedido));
