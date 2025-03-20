@@ -11,5 +11,4 @@ import java.util.List;
 public interface DireccionRepository extends JpaRepository<Direccion, Long> {
     @Query(nativeQuery = true, value = "select * from direcciones d where d.usuario=?1")
     List<Direccion> findAllByUsuario(long id);
-
 }

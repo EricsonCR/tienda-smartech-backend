@@ -1,9 +1,7 @@
 package com.ericson.tiendasmartech.serviceImpl;
 
 import com.ericson.tiendasmartech.dto.DireccionDto;
-import com.ericson.tiendasmartech.dto.UsuarioDto;
 import com.ericson.tiendasmartech.entity.Direccion;
-import com.ericson.tiendasmartech.entity.Usuario;
 import com.ericson.tiendasmartech.model.ServiceResponse;
 import com.ericson.tiendasmartech.repository.DireccionRepository;
 import com.ericson.tiendasmartech.repository.UsuarioRepository;
@@ -51,7 +49,7 @@ public class DireccionServiceImpl implements DireccionService {
     @Override
     public ServiceResponse registrar(DireccionDto direccionDto) {
         try {
-            if (!usuarioRepository.existsById(direccionDto.usuario().id()))
+            if (!usuarioRepository.existsById(direccionDto.id()))
                 return new ServiceResponse("Usuario no existe", HttpStatus.BAD_REQUEST, null);
             direccionRepository.save(dtoToEntity(direccionDto));
             return new ServiceResponse("Direccion registrada exitosamente", HttpStatus.OK, null);
@@ -65,7 +63,7 @@ public class DireccionServiceImpl implements DireccionService {
         try {
             if (!direccionRepository.existsById(direccionDto.id()))
                 return new ServiceResponse("Direccion no existe", HttpStatus.BAD_REQUEST, null);
-            if (!usuarioRepository.existsById(direccionDto.usuario().id()))
+            if (!usuarioRepository.existsById(direccionDto.id()))
                 return new ServiceResponse("Usuario no existe", HttpStatus.BAD_REQUEST, null);
             direccionRepository.save(dtoToEntity(direccionDto));
             return new ServiceResponse("Direeccion actualiza exitosamente", HttpStatus.OK, null);
@@ -95,24 +93,30 @@ public class DireccionServiceImpl implements DireccionService {
     }
 
     private DireccionDto entityToDto(Direccion direccion) {
-        return new DireccionDto(direccion.getId(), null, direccion.getVia(),
-                direccion.getDocumento(),
-                direccion.getNumero(), direccion.getNombres(), direccion.getCelular(),
-                direccion.getDireccion(),
-                direccion.getReferencia(), direccion.getDistrito(), direccion.getProvincia(),
-                direccion.getDepartamento(), direccion.getCodigo_postal());
+        return new DireccionDto(
+                direccion.getId(),
+                direccion.getVia(),
+                direccion.getNombre(),
+                direccion.getNumero(),
+                direccion.getReferencia(),
+                direccion.getDistrito(),
+                direccion.getProvincia(),
+                direccion.getDepartamento(),
+                direccion.getCodigo_postal());
     }
 
     private Direccion dtoToEntity(DireccionDto direccionDto) {
-        return new Direccion(direccionDto.id(), dtoToEntity(direccionDto.usuario()), direccionDto.via(), direccionDto.documento(), direccionDto.numero(), direccionDto.nombres(), direccionDto.celular(),
-                direccionDto.direccion(), direccionDto.referencia(), direccionDto.distrito(),
+        return new Direccion(
+                direccionDto.id(),
+                direccionDto.via(),
+                direccionDto.nombre(),
+                direccionDto.numero(),
+                direccionDto.referencia(),
+                direccionDto.distrito(),
                 direccionDto.provincia(),
-                direccionDto.departamento(), direccionDto.codigo_postal(), null, null);
-    }
-
-    private Usuario dtoToEntity(UsuarioDto usuarioDto) {
-        return new Usuario(usuarioDto.id(), null, null, null, null,
-                null, null, null, null, null, false,
-                false, null, null, null, null, null);
+                direccionDto.departamento(),
+                direccionDto.codigo_postal(),
+                null,
+                null);
     }
 }

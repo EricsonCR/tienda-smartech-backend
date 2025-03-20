@@ -20,9 +20,9 @@ public class AuthController {
         ServiceResponse service = authService.signin(authDto);
         HttpHeaders headers = new HttpHeaders();
         if (service.data() != null)
-            headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + service.data().toString());
+            headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + service.data());
         return ResponseEntity.ok().headers(headers)
-                .body(new ControllerResponse(service.message(), service.status(), service.data()));
+                .body(new ControllerResponse(service.message(), service.status(), null));
     }
 
     @PostMapping("/signup")

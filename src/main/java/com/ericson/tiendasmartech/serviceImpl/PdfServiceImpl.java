@@ -25,7 +25,7 @@ public class PdfServiceImpl implements PdfService {
     public File generarPdf(PedidoDto pedido) {
         try {
             ByteArrayOutputStream baos = designPdf(pedido);
-            String filePath = savePdf(baos, pedido.id());
+            String filePath = savePdf(baos, pedido.numero());
             Path path = Paths.get(filePath);
             if (Files.exists(path)) {
                 return path.toFile();
@@ -36,9 +36,9 @@ public class PdfServiceImpl implements PdfService {
         return null;
     }
 
-    private String savePdf(ByteArrayOutputStream baos, long id) {
+    private String savePdf(ByteArrayOutputStream baos, String numero) {
         String directoryPath = "src/main/resources/static/pdf";
-        String fileName = "reporte_pago_" + id + ".pdf";
+        String fileName = "P" + numero + ".pdf";
         File directory = new File(directoryPath);
 
         if (!directory.exists()) directory.mkdirs();

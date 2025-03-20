@@ -118,8 +118,7 @@ public class CarritoServiceImpl implements CarritoService {
         try {
             Carrito carrito = carritoRepository.findByUsuario(id).orElse(new Carrito());
             if (carrito.getUsuario() == null)
-                return new ServiceResponse("No exsite carrito para este usuario",
-                        HttpStatus.BAD_REQUEST, null);
+                return new ServiceResponse("No exsite carrito para este usuario", HttpStatus.BAD_REQUEST, null);
             return new ServiceResponse("Carrito encontrado", HttpStatus.OK, entityToDto(carrito));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -129,8 +128,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Override
     public ServiceResponse actualizar(CarritoDto carritoDto) {
         try {
-            Carrito carrito = carritoRepository.findByUsuario(carritoDto.usuario().id())
-                    .orElse(new Carrito());
+            Carrito carrito = carritoRepository.findByUsuario(carritoDto.usuario().id()).orElse(new Carrito());
             if (carrito.getId() == 0)
                 return new ServiceResponse("No exite carrito", HttpStatus.BAD_REQUEST, null);
             List<CarritoDetalle> lista = carrito.getCarritoDetalles();

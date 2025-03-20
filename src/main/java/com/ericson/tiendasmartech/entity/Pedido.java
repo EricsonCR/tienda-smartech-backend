@@ -2,6 +2,7 @@ package com.ericson.tiendasmartech.entity;
 
 import com.ericson.tiendasmartech.enums.Entrega;
 import com.ericson.tiendasmartech.enums.EstadoPedido;
+import com.ericson.tiendasmartech.enums.MetodoPago;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,10 +32,16 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private Entrega entrega;
 
+    @ManyToOne
+    @JoinColumn(name = "consignatario")
+    private Consignatario consignatario;
+
     @ManyToOne()
     @JoinColumn(name = "direccion")
     private Direccion direccion;
 
+    @Enumerated(EnumType.STRING)
+    private MetodoPago metodo_pago;
     private double precio_envio;
     private double precio_cupon;
     private double total;

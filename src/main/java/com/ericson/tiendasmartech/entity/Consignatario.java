@@ -1,6 +1,6 @@
 package com.ericson.tiendasmartech.entity;
 
-import com.ericson.tiendasmartech.enums.Via;
+import com.ericson.tiendasmartech.enums.Documento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,38 +12,29 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "direcciones")
-public class Direccion {
+@Table(name = "consignatarios")
+public class Consignatario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @Enumerated(EnumType.STRING)
-    private Via via;
-
-    private String nombre;
-    private int numero;
-    private String referencia;
-    private String distrito;
-    private String provincia;
-    private String departamento;
-    private int codigo_postal;
-
+    private Documento documento;
+    private String numero;
+    private String nombres;
+    private String celular;
+    private String email;
     @Column(updatable = false)
     private Date registro;
     private Date actualiza;
 
     @PrePersist
-    private void PrePersist() {
+    public void prePersist() {
         registro = new Date();
         actualiza = new Date();
-        distrito = distrito.toUpperCase();
-        provincia = provincia.toUpperCase();
-        departamento = departamento.toUpperCase();
     }
 
     @PreUpdate
-    private void PreUpdate() {
+    public void preUpdate() {
         actualiza = new Date();
     }
 }

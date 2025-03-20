@@ -23,9 +23,7 @@ public class Usuario {
 
     @Enumerated(EnumType.STRING)
     private Documento documento;
-
     private String numero;
-
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
@@ -44,7 +42,7 @@ public class Usuario {
     private Date actualiza;
 
     @OneToMany(mappedBy = "usuario")
-    private List<Direccion> direcciones;
+    private List<Domicilio> domicilios;
 
     @OneToMany(mappedBy = "usuario")
     private List<Pedido> pedidos;

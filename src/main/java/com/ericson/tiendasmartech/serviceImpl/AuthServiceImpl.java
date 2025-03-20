@@ -66,9 +66,9 @@ public class AuthServiceImpl implements AuthService {
             usuarioRepository.save(usuario);
 
             EmailDto emailDto = authUtil.generarEmailRegistro(authDto.email(), passwordEncoder.encode(authDto.email()));
-            if (!emailService.sendEmail(emailDto))
-                return new ServiceResponse("Usuario registrado, error email", HttpStatus.OK, null);
-            return new ServiceResponse("Usuario registrado, email enviado", HttpStatus.OK, null);
+//            if (!emailService.sendEmail(emailDto))
+//                return new ServiceResponse("Usuario registrado, error email", HttpStatus.OK, null);
+            return new ServiceResponse("Usuario registrado", HttpStatus.OK, null);
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }

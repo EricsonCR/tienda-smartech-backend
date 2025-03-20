@@ -45,7 +45,7 @@ create table productos(
     sku varchar(50) unique,
     nombre varchar(255) unique,
     descripcion text,
-    slogan varchar(50),
+    slogan varchar(100),
     marca int,
     categoria int,
     precio decimal(6,2),
@@ -105,20 +105,38 @@ create table carrito_detalles(
 
 create table direcciones(
 	id int primary key auto_increment,
-    usuario int,
-    documento enum('DNI','CE','PASAPORTE','RUC'),
-    numero varchar(20),
-    nombres varchar(100),
-    celular varchar(100),
-    via enum('AVENIDA','CALLE','JIRON','URB'),
-    direccion varchar(100),
+    via enum('AVENIDA','CALLE','JIRON','URB','PASAJE'),
+    nombre varchar(100),
+    numero varchar(10),
     referencia varchar(100),
     distrito varchar(50),
     provincia varchar(50),
     departamento varchar(50),
     codigo_postal int,
     registro datetime,
+    actualiza datetime
+);
+
+create table consignatarios(
+	id int primary key auto_increment,
+    documento enum('DNI','RUC','CE','PASAPORTE'),
+    numero varchar(20),
+    nombres varchar(100),
+    celular varchar(20),
+    email varchar(50),
+    registro datetime,
+    actualiza datetime
+);
+
+create table domicilios(
+	id int primary key auto_increment,
+    consignatario int,
+    direccion int,
+    usuario int,
+    registro datetime,
     actualiza datetime,
+    foreign key (consignatario) references consignatarios(id),
+    foreign key (direccion) references direcciones(id),
     foreign key (usuario) references usuarios(id)
 );
 
@@ -128,7 +146,9 @@ create table pedidos(
     estado enum('GENERADO','APROBADO','ENVIADO','ENTREGADO','DEVUELTO','CANCELADO'),
     usuario int,
     entrega enum('DELIVERY','RETIRO'),
+    consignatario int,
     direccion int,
+    metodo_pago enum('TARJETA','MONEDA_DIGITAL','PAGO_EFECTIVO','CONTRA_ENTREGA'),
     precio_envio decimal(6,2),
     precio_cupon decimal(6,2),
     total decimal(6,2),
@@ -138,6 +158,7 @@ create table pedidos(
     registro datetime,
     actualiza datetime,
     foreign key (usuario) references usuarios(id),
+    foreign key (consignatario) references consignatarios(id),
     foreign key (direccion) references direcciones(id)
 );
 
@@ -441,6 +462,7 @@ INSERT INTO especificaciones (nombre, descripcion, producto) VALUES
 ('Dimensiones', '1893 x 1080 x 50 mm', 24),
 ('Colores', 'Negro', 24);
 
+/*
 insert into usuarios(documento,numero,rol,nombres,apellidos,direccion,telefono,email,password,estado,nacimiento,registro,actualiza) values
 ('RUC','20601856078','ADMIN','oficina','','','','','',1,now(),now(),now());
 insert into direcciones(usuario,documento,numero,nombres,celular,via,direccion,referencia,distrito,provincia,departamento,codigo_postal,registro,actualiza) values
@@ -448,6 +470,7 @@ insert into direcciones(usuario,documento,numero,nombres,celular,via,direccion,r
 (1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Universitaria 6045','urb. las vegas','COMAS','LIMA','LIMA',15410,now(),now()),
 (1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Los alisos 1250','parque previ','LOS OLIVOS','LIMA','LIMA',15201,now(),now()),
 (1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Carlos izaguirre 1210','mercado covida','LOS OLIVOS','LIMA','LIMA',15301,now(),now());
+*/
 
 DELIMITER $$
 CREATE TRIGGER after_insert_usuarios
@@ -485,6 +508,8 @@ DELIMITER ;
 
 select * from usuarios;
 select * from direcciones;
+select * from consignatarios;
+select * from domicilios;
 select * from productos;
 select * from categorias;
 select * from marcas;
@@ -496,8 +521,8 @@ select * from pedido_detalles;
 
 /*
 update usuarios
-set verificado = 0
-where id = 2
+set verificado = 1
+where id = 1
 
 drop table carritos;
 truncate table carritos;

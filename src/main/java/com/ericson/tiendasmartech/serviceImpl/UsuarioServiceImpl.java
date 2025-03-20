@@ -1,29 +1,23 @@
 package com.ericson.tiendasmartech.serviceImpl;
 
-import com.ericson.tiendasmartech.dto.DireccionDto;
-import com.ericson.tiendasmartech.dto.PedidoDetalleDto;
-import com.ericson.tiendasmartech.dto.PedidoDto;
-import com.ericson.tiendasmartech.dto.UsuarioDto;
-import com.ericson.tiendasmartech.entity.Direccion;
-import com.ericson.tiendasmartech.entity.Pedido;
-import com.ericson.tiendasmartech.entity.PedidoDetalle;
-import com.ericson.tiendasmartech.entity.Usuario;
+import com.ericson.tiendasmartech.dto.*;
+import com.ericson.tiendasmartech.entity.*;
+import com.ericson.tiendasmartech.mapper.UsuarioMapper;
 import com.ericson.tiendasmartech.model.ServiceResponse;
 import com.ericson.tiendasmartech.repository.UsuarioRepository;
 import com.ericson.tiendasmartech.service.UsuarioService;
+import com.ericson.tiendasmartech.util.UsuarioUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.regex.Pattern;
-
 @Service
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
+
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
+    private final UsuarioUtil usuarioUtil;
 
     @Override
     public ServiceResponse findByEmail(String email) {
@@ -31,7 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             if (!usuarioRepository.existsByEmail(email))
                 return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
             Usuario usuario = usuarioRepository.findByEmail(email).orElse(new Usuario());
-            return new ServiceResponse("Usuario encontrado", HttpStatus.OK, entityToDto(usuario));
+            return new ServiceResponse("Usuario encontrado", HttpStatus.OK, usuarioMapper.toDto(usuario));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
@@ -42,7 +36,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         try {
             String email = usuarioDto.email();
             if (usuarioRepository.existsByEmail(email)) {
-                String message = validar(usuarioDto);
+                String message = usuarioUtil.validar(usuarioDto);
                 if (!message.equals("OK"))
                     return new ServiceResponse(message, HttpStatus.BAD_REQUEST, null);
                 Usuario usuario = usuarioRepository.findByEmail(email).orElse(new Usuario());
@@ -59,107 +53,5 @@ public class UsuarioServiceImpl implements UsuarioService {
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
-    }
-
-    private UsuarioDto entityToDto(Usuario usuario) {
-        return new UsuarioDto(
-                usuario.getId(),
-                usuario.getDocumento(),
-                usuario.getNumero(),
-                usuario.getRol(),
-                usuario.getNombres(),
-                usuario.getApellidos(),
-                usuario.getDireccion(),
-                usuario.getTelefono(),
-                usuario.getEmail(),
-                usuario.getNacimiento(),
-                toListDireccionDto(usuario.getDirecciones()),
-                toListPedidoDto(usuario.getPedidos())
-        );
-    }
-
-    private List<PedidoDto> toListPedidoDto(List<Pedido> pedidos) {
-        List<PedidoDto> lista = new ArrayList<>();
-        for (Pedido pedido : pedidos) {
-            lista.add(new PedidoDto(
-                    pedido.getId(),
-                    pedido.getNumero(),
-                    pedido.getEstado(),
-                    null,
-                    pedido.getEntrega(),
-                    null,
-                    pedido.getPrecio_envio(),
-                    pedido.getPrecio_cupon(),
-                    pedido.getTotal(),
-                    pedido.getIgv(),
-                    pedido.getComentarios(),
-                    pedido.getFecha_entrega(),
-                    toListPedidoDetalleDto(pedido.getPedidoDetalles())
-            ));
-        }
-        return lista;
-    }
-
-    private List<PedidoDetalleDto> toListPedidoDetalleDto(List<PedidoDetalle> detalles) {
-        List<PedidoDetalleDto> lista = new ArrayList<>();
-        for (PedidoDetalle detalle : detalles) {
-            lista.add(new PedidoDetalleDto(
-                    detalle.getId(),
-                    null,
-                    null,
-                    detalle.getCantidad(),
-                    detalle.getPrecio()
-            ));
-        }
-        return lista;
-    }
-
-    private List<DireccionDto> toListDireccionDto(List<Direccion> direcciones) {
-        List<DireccionDto> lista = new ArrayList<>();
-        for (Direccion direccion : direcciones) {
-            lista.add(new DireccionDto(
-                    direccion.getId(),
-                    null,
-                    direccion.getVia(),
-                    direccion.getDocumento(),
-                    direccion.getNumero(),
-                    direccion.getNombres(),
-                    direccion.getCelular(),
-                    direccion.getDireccion(),
-                    direccion.getReferencia(),
-                    direccion.getDistrito(),
-                    direccion.getProvincia(),
-                    direccion.getDepartamento(),
-                    direccion.getCodigo_postal()
-            ));
-        }
-        return lista;
-    }
-
-    private String validar(UsuarioDto usuarioDto) {
-        String patronLetras = "^(?=.*[a-zA-Z]{2})([A-Za-z]{2,}( [A-Za-z]{2,})*)$";
-        String patronDocumento = "^\\d{8,12}$";
-        String patronCelular = "^9\\d{8}$";
-        if (!Pattern.compile(patronLetras).matcher(usuarioDto.nombres()).matches())
-            return "Error en campo nombres, solo caracteres de la a-z (minuscula, mayuscula, espacio, cantidad minima 2)";
-
-        if (!Pattern.compile(patronLetras).matcher(usuarioDto.apellidos()).matches())
-            return "Error en campo apellidos, solo caracteres de la a-z (minuscula, mayuscula, espacio, cantidad minima 2)";
-
-        if (!Pattern.compile(patronDocumento).matcher(usuarioDto.numero()).matches())
-            return "Error en el campo numero documento, solo digitos (0-9, minimo 8 y maximo 12)";
-
-        Calendar fechaValida = Calendar.getInstance();
-        fechaValida.add(Calendar.YEAR, -18);
-        Calendar fechaNacimientoCal = Calendar.getInstance();
-        fechaNacimientoCal.setTime(usuarioDto.nacimiento());
-        // !fechaNacimientoCal.equals(fechaActual)
-        if (fechaNacimientoCal.after(fechaValida))
-            return "Error en campo nacimiento, debe ser mayor a 18 años.";
-
-        if (!Pattern.compile(patronCelular).matcher(usuarioDto.telefono()).matches())
-            return "Error en el campo numero celular, solo digitos (0-9, cantidad 9 digitos y empezar por 9)";
-
-        return "OK";
     }
 }
