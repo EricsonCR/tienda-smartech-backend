@@ -140,6 +140,20 @@ create table domicilios(
     foreign key (usuario) references usuarios(id)
 );
 
+create table oficinas(
+	id int primary key auto_increment,
+    usuario int, 
+    direccion int,
+    nombre varchar(50),
+    celular varchar(20),
+    hora_inicio time,
+    hora_fin time,
+    registro datetime,
+    actualiza datetime,
+    foreign key (usuario) references Usuarios(id),
+    foreign key (direccion) references Direcciones (id)
+);
+
 create table pedidos(
 	id int primary key auto_increment,
     numero varchar(50),
@@ -462,15 +476,12 @@ INSERT INTO especificaciones (nombre, descripcion, producto) VALUES
 ('Dimensiones', '1893 x 1080 x 50 mm', 24),
 ('Colores', 'Negro', 24);
 
-/*
-insert into usuarios(documento,numero,rol,nombres,apellidos,direccion,telefono,email,password,estado,nacimiento,registro,actualiza) values
-('RUC','20601856078','ADMIN','oficina','','','','','',1,now(),now(),now());
-insert into direcciones(usuario,documento,numero,nombres,celular,via,direccion,referencia,distrito,provincia,departamento,codigo_postal,registro,actualiza) values
-(1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Tupac Amaru 5855','urb. huaquillay','COMAS','LIMA','LIMA',15104,now(),now()),
-(1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Universitaria 6045','urb. las vegas','COMAS','LIMA','LIMA',15410,now(),now()),
-(1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Los alisos 1250','parque previ','LOS OLIVOS','LIMA','LIMA',15201,now(),now()),
-(1,'RUC','20601856078','SMARTECH SAC','999888777','AVENIDA','Carlos izaguirre 1210','mercado covida','LOS OLIVOS','LIMA','LIMA',15301,now(),now());
-*/
+insert into usuarios(documento,numero,rol,nombres,apellidos,direccion,telefono,email,password,estado,verificado,nacimiento,registro,actualiza) values
+('PASAPORTE','19552011','ADMIN','Steve','Jobs','California','19552011','jobs@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,now(),now(),now()),
+('PASAPORTE','19552025','ADMIN','Bill','Gates','Seattle','19552025','gates@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,now(),now(),now()),
+('DNI','46348500','CLIENTE','Ericson','Cruz','','','ericson4634@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now());
+
+insert into carritos(usuario,registro,actualiza) values (3,now(),now());
 
 DELIMITER $$
 CREATE TRIGGER after_insert_usuarios
@@ -510,6 +521,7 @@ select * from usuarios;
 select * from direcciones;
 select * from consignatarios;
 select * from domicilios;
+select * from oficinas;
 select * from productos;
 select * from categorias;
 select * from marcas;
@@ -522,7 +534,7 @@ select * from pedido_detalles;
 /*
 update usuarios
 set verificado = 1
-where id = 1
+where id = 3
 
 drop table carritos;
 truncate table carritos;

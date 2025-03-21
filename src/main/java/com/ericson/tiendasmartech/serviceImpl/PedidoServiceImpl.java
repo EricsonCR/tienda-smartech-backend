@@ -4,6 +4,7 @@ import com.ericson.tiendasmartech.dto.*;
 import com.ericson.tiendasmartech.entity.*;
 import com.ericson.tiendasmartech.mapper.PedidoMapper;
 import com.ericson.tiendasmartech.model.ServiceResponse;
+import com.ericson.tiendasmartech.repository.ConsignatarioRepository;
 import com.ericson.tiendasmartech.repository.PedidoRepository;
 import com.ericson.tiendasmartech.service.EmailService;
 import com.ericson.tiendasmartech.service.PdfService;
@@ -27,6 +28,7 @@ public class PedidoServiceImpl implements PedidoService {
     private final PedidoMapper pedidoMapper;
     private final PedidoUtil pedidoUtil;
     private final PdfUtil pdfUtil;
+    private final ConsignatarioRepository consignatarioRepository;
 
     @Override
     @Transactional
@@ -35,6 +37,12 @@ public class PedidoServiceImpl implements PedidoService {
             Pedido pedido = pedidoMapper.toEntity(pedidoDto);
             for (PedidoDetalle pedidoDetalle : pedido.getPedidoDetalles()) pedidoDetalle.setPedido(pedido);
             pedido.setNumero(pedidoUtil.generarNumeroPedido());
+
+            if (!consignatarioRepository.existsById(pedido.getConsignatario().getId())) {
+                Consignatario consignatario = consignatarioRepository.save(pedido.getConsignatario());
+                pedido.setConsignatario(consignatario);
+            }
+
             pedidoRepository.save(pedido);
 
             File file = pdfUtil.generarPdf(pedidoMapper.toDto(pedido));
