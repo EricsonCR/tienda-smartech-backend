@@ -141,6 +141,7 @@ public class PdfUtil {
 
         String total = String.format("%.2f", pedido.total() + pedido.precio_envio());
         cell = new PdfPCell(new Paragraph("S/ " + total, datosFont));
+        cell.setBackgroundColor(BaseColor.YELLOW);
         cell.setPadding(4f);
         table.addCell(cell);
 
@@ -211,7 +212,7 @@ public class PdfUtil {
 
         PdfPTable headerTable = new PdfPTable(new float[]{2, 3, 3});
         Image image = Image.getInstance("src/main/resources/static/img/logo-pdf.png");
-        image.scaleToFit(150, 150);
+        image.scaleToFit(130, 130);
         PdfPCell cell;
 
         //IMAGEN - DATOS EMPRESA - DATOS FACTURACION

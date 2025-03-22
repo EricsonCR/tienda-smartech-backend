@@ -532,6 +532,11 @@ select * from pedidos;
 select * from pedido_detalles;
 
 /*
+
+update pedidos
+set estado = 'ENVIADO'
+where id = 1
+
 update usuarios
 set verificado = 1
 where id = 3

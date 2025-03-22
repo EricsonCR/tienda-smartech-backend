@@ -55,5 +55,15 @@ public class PedidoServiceImpl implements PedidoService {
         }
     }
 
-
+    @Override
+    public ServiceResponse findById(long id) {
+        try {
+            if (!pedidoRepository.existsById(id))
+                return new ServiceResponse("ID not found", HttpStatus.BAD_REQUEST, null);
+            Pedido pedido = pedidoRepository.findById(id).orElse(null);
+            return new ServiceResponse("Pedido found", HttpStatus.OK, pedidoMapper.toDto(pedido));
+        } catch (Exception e) {
+            return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        }
+    }
 }

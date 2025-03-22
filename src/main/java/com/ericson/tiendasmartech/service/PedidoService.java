@@ -5,4 +5,6 @@ import com.ericson.tiendasmartech.model.ServiceResponse;
 
 public interface PedidoService {
     ServiceResponse registrar(PedidoDto pedidoDto);
+
+    ServiceResponse findById(long id);
 }

@@ -10,6 +10,7 @@ import java.util.List;
 @Component
 public class PedidoMapper {
     public PedidoDto toDto(Pedido pedido) {
+        if (pedido == null) return null;
         UsuarioDto usuario = toUsuarioDto(pedido.getUsuario());
         DireccionDto direccion = toDireccionDto(pedido.getDireccion());
         ConsignatarioDto consignatario = toConsignatarioDto(pedido.getConsignatario());

@@ -6,10 +6,7 @@ import com.ericson.tiendasmartech.model.ServiceResponse;
 import com.ericson.tiendasmartech.service.PedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/pedido")
@@ -20,6 +17,12 @@ public class PedidoController {
     @PostMapping("/registrar")
     public ResponseEntity<ControllerResponse> registrar(@RequestBody PedidoDto pedidoDto) {
         ServiceResponse service = pedidoService.registrar(pedidoDto);
+        return ResponseEntity.ok(new ControllerResponse(service.message(), service.status(), service.data()));
+    }
+
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<ControllerResponse> findById(@PathVariable Long id) {
+        ServiceResponse service = pedidoService.findById(id);
         return ResponseEntity.ok(new ControllerResponse(service.message(), service.status(), service.data()));
     }
 }
