@@ -51,7 +51,8 @@ public class CarritoServiceImpl implements CarritoService {
                 return new ServiceResponse("Producto ya existe", HttpStatus.FOUND, null);
             CarritoDetalle detalle = carritoDetalleMapper.toEntity(carritoDetalleDto);
             carrito.getCarritoDetalles().add(detalle);
-            carrito.getCarritoDetalles().getLast().setCarrito(carrito);
+            int indexLast = carrito.getCarritoDetalles().size() - 1;
+            carrito.getCarritoDetalles().get(indexLast).setCarrito(carrito);
             carritoRepository.save(carrito);
             return new ServiceResponse("Producto agregado al carrito", HttpStatus.OK, carritoMapper.toDto(carrito));
         } catch (Exception e) {
