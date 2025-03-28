@@ -12,6 +12,7 @@ public class UsuarioMapper {
     public UsuarioDto toDto(Usuario u) {
         List<DomicilioDto> domicilios = toListDomicilioDto(u.getDomicilios());
         List<PedidoDto> pedidos = toListPedidoDto(u.getPedidos());
+        List<FavoritoDto> favoritos = toListFavoritoDto(u.getFavoritos());
         return new UsuarioDto(
                 u.getId(),
                 u.getDocumento(),
@@ -24,12 +25,21 @@ public class UsuarioMapper {
                 u.getEmail(),
                 u.getNacimiento(),
                 domicilios,
-                pedidos
+                pedidos,
+                favoritos
         );
     }
 
     public Usuario toEntity(UsuarioDto usuarioDto) {
         return null;
+    }
+
+    private List<FavoritoDto> toListFavoritoDto(List<Favorito> favoritos) {
+        List<FavoritoDto> lista = new ArrayList<>();
+        for (Favorito f : favoritos) {
+            lista.add(new FavoritoDto(f.getId(), null, toProductoDto(f.getProducto())));
+        }
+        return lista;
     }
 
     private List<DomicilioDto> toListDomicilioDto(List<Domicilio> domicilios) {
@@ -73,13 +83,43 @@ public class UsuarioMapper {
                 producto.getNombre(),
                 producto.getDescripcion(),
                 producto.getSlogan(),
-                null,
+                toMarcaDto(producto.getMarca()),
                 null,
                 producto.getPrecio(),
                 producto.getDescuento(),
                 producto.getStock(),
-                null,
+                toListFotoDto(producto.getFotos()),
                 null
+        );
+    }
+
+    private MarcaDto toMarcaDto(Marca marca) {
+        return new MarcaDto(
+                marca.getId(),
+                marca.getNombre(),
+                null
+        );
+    }
+
+    private List<FotoDto> toListFotoDto(List<Foto> fotos) {
+        List<FotoDto> lista = new ArrayList<>();
+        for (Foto foto : fotos) {
+            lista.add(toFotoDto(foto));
+        }
+        return lista;
+    }
+
+    private FotoDto toFotoDto(Foto foto) {
+        return new FotoDto(
+                foto.getId(),
+                toGaleriaDto(foto.getGaleria())
+        );
+    }
+
+    private GaleriaDto toGaleriaDto(Galeria galeria) {
+        return new GaleriaDto(
+                galeria.getId(),
+                galeria.getUrl()
         );
     }
 

@@ -48,7 +48,9 @@ public class CarritoMapper {
                 usuario.getEmail(),
                 usuario.getNacimiento(),
                 null,
-                null);
+                null,
+                null
+        );
     }
 
     private Usuario toUsuarioEntity(UsuarioDto usuario) {
@@ -66,6 +68,7 @@ public class CarritoMapper {
                 false,
                 false,
                 usuario.nacimiento(),
+                null,
                 null,
                 null,
                 null,

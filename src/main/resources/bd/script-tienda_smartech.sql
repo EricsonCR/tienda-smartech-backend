@@ -186,6 +186,49 @@ create table pedido_detalles(
     foreign key (producto) references productos(id)
 );
 
+create table favoritos(
+	id int primary key auto_increment,
+    usuario int,
+    producto int,
+    registro datetime,
+    foreign key (usuario) references Usuarios(id),
+    foreign key (producto) references Productos(id)
+);
+
+DELIMITER $$
+CREATE TRIGGER after_insert_usuarios
+AFTER INSERT ON usuarios
+FOR EACH ROW
+BEGIN
+    INSERT INTO carritos (usuario, registro, actualiza)
+    VALUES (NEW.id, now(), now());
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER after_insert_pedido_detalles
+AFTER INSERT ON pedido_detalles
+FOR EACH ROW
+BEGIN
+    -- Declarar la variable para identificar al usuario
+    DECLARE user_id INT;
+
+    -- Obtener el ID del usuario asociado al pedido insertado
+    SELECT usuario INTO user_id
+    FROM pedidos
+    WHERE id = NEW.pedido;
+
+    -- Eliminar las filas del carrito_detalles únicamente del usuario correspondiente
+    DELETE FROM carrito_detalles
+    WHERE producto = NEW.producto
+      AND carrito IN (
+          SELECT id
+          FROM carritos
+          WHERE usuario = user_id
+      );
+END$$
+DELIMITER ;
+
 insert into galerias(url) values
 ('apple-celular-1.png'),('apple-celular-2.png'),('apple-celular-3.png'),('apple-celular-4.png'),
 ('samsung-celular-1.png'),('samsung-celular-2.png'),('samsung-celular-3.png'),('samsung-celular-4.png'),
@@ -477,45 +520,9 @@ INSERT INTO especificaciones (nombre, descripcion, producto) VALUES
 ('Colores', 'Negro', 24);
 
 insert into usuarios(documento,numero,rol,nombres,apellidos,direccion,telefono,email,password,estado,verificado,nacimiento,registro,actualiza) values
-('PASAPORTE','19552011','ADMIN','Steve','Jobs','California','19552011','jobs@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,now(),now(),now()),
-('PASAPORTE','19552025','ADMIN','Bill','Gates','Seattle','19552025','gates@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,now(),now(),now()),
+('PASAPORTE','19552011','ADMIN','Steve','Jobs','California','19552011','jobs@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now()),
+('PASAPORTE','19552025','ADMIN','Bill','Gates','Seattle','19552025','gates@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now()),
 ('DNI','46348500','CLIENTE','Ericson','Cruz','','','ericson4634@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now());
-
-insert into carritos(usuario,registro,actualiza) values (3,now(),now());
-
-DELIMITER $$
-CREATE TRIGGER after_insert_usuarios
-AFTER INSERT ON usuarios
-FOR EACH ROW
-BEGIN
-    INSERT INTO carritos (usuario, registro, actualiza)
-    VALUES (NEW.id, now(), now());
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE TRIGGER after_insert_pedido_detalles
-AFTER INSERT ON pedido_detalles
-FOR EACH ROW
-BEGIN
-    -- Declarar la variable para identificar al usuario
-    DECLARE user_id INT;
-
-    -- Obtener el ID del usuario asociado al pedido insertado
-    SELECT usuario INTO user_id
-    FROM pedidos
-    WHERE id = NEW.pedido;
-
-    -- Eliminar las filas del carrito_detalles únicamente del usuario correspondiente
-    DELETE FROM carrito_detalles
-    WHERE producto = NEW.producto
-      AND carrito IN (
-          SELECT id
-          FROM carritos
-          WHERE usuario = user_id
-      );
-END$$
-DELIMITER ;
 
 select * from usuarios;
 select * from direcciones;
@@ -530,6 +537,7 @@ select * from carritos;
 select * from carrito_detalles;
 select * from pedidos;
 select * from pedido_detalles;
+select * from favoritos;
 
 /*
 

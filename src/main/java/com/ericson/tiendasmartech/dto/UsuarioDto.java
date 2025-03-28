@@ -18,6 +18,7 @@ public record UsuarioDto(
         String email,
         Date nacimiento,
         List<DomicilioDto> domicilios,
-        List<PedidoDto> pedidos
+        List<PedidoDto> pedidos,
+        List<FavoritoDto> favoritos
 ) {
 }

@@ -120,6 +120,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private Usuario dtoToEntity(AuthDto authDto) {
-        return new Usuario(0, authDto.documento(), authDto.numero(), Rol.CLIENTE, authDto.nombres(), authDto.apellidos(), null, null, authDto.email(), authDto.password(), false, false, null, null, null, null, null);
+        return new Usuario(0, authDto.documento(), authDto.numero(), Rol.CLIENTE, authDto.nombres(), authDto.apellidos(), null, null, authDto.email(), authDto.password(), false, false, null, null, null, null, null, null);
     }
 }

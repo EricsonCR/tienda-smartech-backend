@@ -56,6 +56,7 @@ public class DomicilioMapper {
                 usuario.getEmail(),
                 usuario.getNacimiento(),
                 null,
+                null,
                 null
         );
     }
@@ -99,6 +100,7 @@ public class DomicilioMapper {
                 null,
                 false,
                 false,
+                null,
                 null,
                 null,
                 null,

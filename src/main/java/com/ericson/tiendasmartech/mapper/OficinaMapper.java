@@ -58,6 +58,7 @@ public class OficinaMapper {
                 usuario.getEmail(),
                 usuario.getNacimiento(),
                 null,
+                null,
                 null
         );
     }
@@ -93,6 +94,7 @@ public class OficinaMapper {
                 false,
                 false,
                 usuario.nacimiento(),
+                null,
                 null,
                 null,
                 null,

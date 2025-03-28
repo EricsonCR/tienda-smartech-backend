@@ -78,6 +78,7 @@ public class PedidoMapper {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -153,7 +154,9 @@ public class PedidoMapper {
                 usuario.getEmail(),
                 usuario.getNacimiento(),
                 null,
-                null);
+                null,
+                null
+        );
     }
 
     private DireccionDto toDireccionDto(Direccion d) {
