@@ -18,7 +18,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry
                         .addMapping("/api/**")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("http://localhost:4200","https://profound-daffodil-4550c4.netlify.app")
                         .allowedMethods("*")
                         .exposedHeaders("*")
                         .allowCredentials(true);
@@ -30,6 +30,7 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:4200");
+        config.addAllowedOrigin("https://profound-daffodil-4550c4.netlify.app");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("*");
