@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             UserDetails userDetails = userDetailsService.loadUserByUsername(authDto.email());
             String token = jwtService.getToken(userDetails);
 
-            return new ServiceResponse("Usuario autenticado exitosamente", HttpStatus.OK, token);
+            return new ServiceResponse("Usuario autenticado exitosamente railway", HttpStatus.OK, token);
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
