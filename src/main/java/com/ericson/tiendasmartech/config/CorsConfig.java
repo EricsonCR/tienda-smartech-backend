@@ -18,7 +18,8 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry
                         .addMapping("/api/**")
-                        .allowedOrigins("http://localhost:4200","https://tienda-smartech.netlify.app")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("https://tienda-smartech.netlify.app")
                         .allowedMethods("*")
                         .exposedHeaders("*")
                         .allowCredentials(true);
