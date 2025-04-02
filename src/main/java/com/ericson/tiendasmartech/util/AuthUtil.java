@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class AuthUtil {
     public EmailDto generarEmailRegistro(String email, String token) {
         String subject = "Email de validacion de registro";
-        String message = "Hola " + email + ", bienvenido a nuestra tienda SmarTech.\n" + "Puedes validar tu registro haciendo click al siguiente enlace:\n" + "http://localhost:4200/auth/validatedToken/" + token;
+        String message = "Hola " + email + ", bienvenido a nuestra tienda SmarTech.\n" + "Puedes validar tu registro haciendo click al siguiente enlace:\n" + "https://tienda-smartech.netlify.app/auth/validatedToken/" + token;
         return new EmailDto(email, subject, message, null);
     }
 }
