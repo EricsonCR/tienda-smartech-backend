@@ -7,7 +7,6 @@ import com.ericson.tiendasmartech.model.ServiceResponse;
 import com.ericson.tiendasmartech.repository.ConsignatarioRepository;
 import com.ericson.tiendasmartech.repository.PedidoRepository;
 import com.ericson.tiendasmartech.service.EmailService;
-import com.ericson.tiendasmartech.service.PdfService;
 import com.ericson.tiendasmartech.service.PedidoService;
 import com.ericson.tiendasmartech.util.PdfUtil;
 import com.ericson.tiendasmartech.util.PedidoUtil;
@@ -23,7 +22,6 @@ import java.io.File;
 public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
-    private final PdfService pdfService;
     private final EmailService emailService;
     private final PedidoMapper pedidoMapper;
     private final PedidoUtil pedidoUtil;
