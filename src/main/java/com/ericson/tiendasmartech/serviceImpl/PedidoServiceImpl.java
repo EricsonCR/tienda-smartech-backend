@@ -47,8 +47,8 @@ public class PedidoServiceImpl implements PedidoService {
 
             File file = pdfUtil.generarPdf(pedidoMapper.toDto(pedido));
             EmailDto emailDto = pedidoUtil.generarEmailPedido(pedido.getUsuario().getEmail(), pedido.getNumero());
-//            if (!emailService.sendEmailFile(emailDto, file))
-//                return new ServiceResponse("Pedido ok, Email fallido, ", HttpStatus.OK, pedidoMapper.toDto(pedido));
+            if (!emailService.sendEmailFile(emailDto, file))
+                return new ServiceResponse("Pedido registrado, Email fail, ", HttpStatus.OK, pedidoMapper.toDto(pedido));
             return new ServiceResponse("Pedido registrado", HttpStatus.OK, pedidoMapper.toDto(pedido));
         } catch (Exception e) {
             return new ServiceResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
