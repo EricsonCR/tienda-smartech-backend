@@ -39,7 +39,7 @@ public class FavoritoServiceImpl implements FavoritoService {
             long usuarioId = favorito.getUsuario().getId();
             long productoId = favorito.getProducto().getId();
             if (favoritoRepository.existsByUsuarioIdAndProductoId(usuarioId, productoId))
-                return new ServiceResponse("Favorito already exists", HttpStatus.BAD_REQUEST, null);
+                return new ServiceResponse("Favorito already exists", HttpStatus.FOUND, null);
             favoritoRepository.save(favorito);
             return new ServiceResponse("Favorito create", HttpStatus.OK, favoritoMapper.toDto(favorito));
         } catch (Exception e) {

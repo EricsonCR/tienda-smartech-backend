@@ -84,7 +84,7 @@ public class UsuarioMapper {
                 producto.getDescripcion(),
                 producto.getSlogan(),
                 toMarcaDto(producto.getMarca()),
-                null,
+                toCategoriaDto(producto.getCategoria()),
                 producto.getPrecio(),
                 producto.getDescuento(),
                 producto.getStock(),
@@ -97,6 +97,14 @@ public class UsuarioMapper {
         return new MarcaDto(
                 marca.getId(),
                 marca.getNombre(),
+                null
+        );
+    }
+
+    private CategoriaDto toCategoriaDto(Categoria categoria) {
+        return new CategoriaDto(
+                categoria.getId(),
+                categoria.getNombre(),
                 null
         );
     }
