@@ -1,12 +1,14 @@
 package com.ericson.tiendasmartech.config;
 
 import com.ericson.tiendasmartech.entity.Usuario;
+import com.ericson.tiendasmartech.enums.Rol;
 import com.ericson.tiendasmartech.repository.UsuarioRepository;
 import com.ericson.tiendasmartech.security.AuthFilterSecurity;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,7 +18,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,9 +43,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(config -> config
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("api/producto/listar").permitAll()
-                        .requestMatchers("api/producto/buscarPorNombre/**").permitAll()
-                        .requestMatchers("api/categoria/listar").permitAll()
+                        .requestMatchers("/api/producto/listar").permitAll()
+                        .requestMatchers("/api/producto/buscarPorNombre/**").permitAll()
+                        .requestMatchers("/api/categoria/listar").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
@@ -70,10 +74,11 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            Usuario usuario = usuarioRepository.findByEmail(username).orElse(new Usuario());
+            Usuario usuario = usuarioRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
             return User.withUsername(usuario.getEmail())
                     .password(usuario.getPassword())
-                    .authorities(List.of())
+                    .authorities(String.valueOf(usuario.getRol()))
                     .build();
         };
     }
