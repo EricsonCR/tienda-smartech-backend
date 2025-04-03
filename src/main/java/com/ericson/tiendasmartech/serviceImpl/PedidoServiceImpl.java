@@ -29,7 +29,6 @@ public class PedidoServiceImpl implements PedidoService {
     private final ConsignatarioRepository consignatarioRepository;
 
     @Override
-    @Transactional
     public ServiceResponse registrar(PedidoDto pedidoDto) {
         try {
             Pedido pedido = pedidoMapper.toEntity(pedidoDto);
