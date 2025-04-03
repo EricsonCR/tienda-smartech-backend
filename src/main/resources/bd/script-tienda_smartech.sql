@@ -1,4 +1,4 @@
-use test;
+use sys;
 drop database if exists tienda_smartech;
 create database if not exists tienda_smartech;
 use tienda_smartech;
@@ -150,8 +150,8 @@ create table oficinas(
     hora_fin time,
     registro datetime,
     actualiza datetime,
-    foreign key (usuario) references Usuarios(id),
-    foreign key (direccion) references Direcciones (id)
+    foreign key (usuario) references usuarios(id),
+    foreign key (direccion) references direcciones (id)
 );
 
 create table pedidos(
@@ -191,8 +191,8 @@ create table favoritos(
     usuario int,
     producto int,
     registro datetime,
-    foreign key (usuario) references Usuarios(id),
-    foreign key (producto) references Productos(id)
+    foreign key (usuario) references usuarios(id),
+    foreign key (producto) references productos(id)
 );
 
 DELIMITER $$
@@ -521,9 +521,10 @@ INSERT INTO especificaciones (nombre, descripcion, producto) VALUES
 
 insert into usuarios(documento,numero,rol,nombres,apellidos,direccion,telefono,email,password,estado,verificado,nacimiento,registro,actualiza) values
 ('PASAPORTE','19552011','ADMIN','Steve','Jobs','California','19552011','jobs@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now()),
-('PASAPORTE','19552025','ADMIN','Bill','Gates','Seattle','19552025','gates@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now()),
-('DNI','46348500','CLIENTE','Ericson','Cruz','','','ericson4634@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now());
+('PASAPORTE','19552025','ADMIN','Bill','Gates','Seattle','19552025','gates@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now());
+-- ('DNI','46348500','CLIENTE','Ericson','Cruz','','','ericson4634@gmail.com','$2a$10$g9xqnDDmb/hOgyerlsMsteo5PgJON6Xk.zPV0QKDrW/JDYpulA/0S',1,1,null,now(),now());
 
+/*
 select * from usuarios;
 select * from direcciones;
 select * from consignatarios;
@@ -538,8 +539,6 @@ select * from carrito_detalles;
 select * from pedidos;
 select * from pedido_detalles;
 select * from favoritos;
-
-/*
 
 update pedidos
 set estado = 'ENVIADO'
