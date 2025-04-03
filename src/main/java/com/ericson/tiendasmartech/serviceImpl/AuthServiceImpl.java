@@ -21,6 +21,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -77,13 +80,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ServiceResponse validatedToken(String token) {
         try {
-
-            String email = jwtService.getUsernameToken(token);
+            String token_decode = URLDecoder.decode(token, StandardCharsets.UTF_8);
+            String email = jwtService.getUsernameToken(token_decode);
             if (!usuarioRepository.existsByEmail(email))
                 return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
             if (usuarioRepository.existsByEmailAndVerificadoIsTrue(email))
                 return new ServiceResponse("Email ya esta validado", HttpStatus.CONFLICT, null);
-            if (jwtService.expiredToken(token)) {
+            if (jwtService.expiredToken(token_decode)) {
                 String message = "Token expirado, debe generar token de registro";
                 return new ServiceResponse(message, HttpStatus.BAD_REQUEST, null);
             }
