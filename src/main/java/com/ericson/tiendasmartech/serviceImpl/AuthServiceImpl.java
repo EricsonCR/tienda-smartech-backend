@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             usuarioRepository.save(usuario);
 
-            EmailDto emailDto = authUtil.generarEmailRegistro(authDto.email(), passwordEncoder.encode(authDto.email()));
+            EmailDto emailDto = authUtil.generarEmailRegistro(authDto.email(), jwtService.getToken(authDto.email()));
             if (!emailService.sendEmail(emailDto))
                 return new ServiceResponse("Usuario registrado, error email", HttpStatus.OK, null);
             return new ServiceResponse("Usuario registrado", HttpStatus.OK, null);
@@ -80,13 +80,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ServiceResponse validatedToken(String token) {
         try {
-            String token_decode = URLDecoder.decode(token, StandardCharsets.UTF_8);
-            String email = jwtService.getUsernameToken(token_decode);
+            String email = jwtService.getUsernameToken(token);
             if (!usuarioRepository.existsByEmail(email))
                 return new ServiceResponse("Email no existe", HttpStatus.BAD_REQUEST, null);
             if (usuarioRepository.existsByEmailAndVerificadoIsTrue(email))
                 return new ServiceResponse("Email ya esta validado", HttpStatus.CONFLICT, null);
-            if (jwtService.expiredToken(token_decode)) {
+            if (jwtService.expiredToken(token)) {
                 String message = "Token expirado, debe generar token de registro";
                 return new ServiceResponse(message, HttpStatus.BAD_REQUEST, null);
             }
@@ -108,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
             if (usuarioRepository.existsByEmailAndVerificadoIsTrue(email))
                 return new ServiceResponse("Email ya esta validado", HttpStatus.BAD_REQUEST, null);
 
-            EmailDto emailDto = authUtil.generarEmailRegistro(email, passwordEncoder.encode(email));
+            EmailDto emailDto = authUtil.generarEmailRegistro(email, jwtService.getToken(email));
             if (emailService.sendEmail(emailDto))
                 return new ServiceResponse("Email enviado", HttpStatus.OK, null);
             return new ServiceResponse("Email fallido", HttpStatus.CONFLICT, null);

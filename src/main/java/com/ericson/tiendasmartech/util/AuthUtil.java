@@ -9,9 +9,8 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class AuthUtil {
     public EmailDto generarEmailRegistro(String email, String token) {
-        String token_url = URLEncoder.encode(token, StandardCharsets.UTF_8);
         String subject = "Email de validacion de registro";
-        String message = "Hola " + email + ", bienvenido a nuestra tienda SmarTech.\n" + "Puedes validar tu registro haciendo click al siguiente enlace:\n" + "https://tienda-smartech.netlify.app/auth/validatedToken/" + token_url;
+        String message = "Hola " + email + ", bienvenido a nuestra tienda SmarTech.\n" + "Puedes validar tu registro haciendo click al siguiente enlace:\n" + "https://tienda-smartech.netlify.app/auth/validatedToken/" + token;
         return new EmailDto(email, subject, message, null);
     }
 }
