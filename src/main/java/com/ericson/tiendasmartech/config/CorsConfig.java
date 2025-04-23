@@ -20,6 +20,7 @@ public class CorsConfig {
                         .addMapping("/api/**")
                         .allowedOrigins("http://localhost:4200")
                         .allowedOrigins("https://tienda-smartech.netlify.app")
+                        .allowedOrigins("https://tienda-smartech-backend.onrender.com")
                         .allowedMethods("*")
                         .exposedHeaders("*")
                         .allowCredentials(true);
@@ -32,6 +33,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:4200");
         config.addAllowedOrigin("https://tienda-smartech.netlify.app");
+        config.addAllowedOrigin("https://tienda-smartech-backend.onrender.com");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("*");
