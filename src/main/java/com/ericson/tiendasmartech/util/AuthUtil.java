@@ -14,4 +14,3 @@ public class AuthUtil {
         return new EmailDto(email, subject, message, null);
     }
 }
-git
