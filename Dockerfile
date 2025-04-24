@@ -10,6 +10,7 @@ WORKDIR /app
 
 # Copiar el archivo JAR desde la etapa de construcción
 COPY --from=build /app/target/*.jar app.jar
+COPY src/main/resources/static /app/src/main/resources/static
 
 # Exponer el puerto en el que la app correrá
 EXPOSE 8080
